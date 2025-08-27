@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use App\Filament\Exports\ProductExport;
-use App\Filament\Imports\ProductImport;
+use App\Filament\Exports\ProductExporter;
+use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\Products\ProductResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ExportAction;
@@ -19,9 +19,9 @@ class ListProducts extends ListRecords
         return [
             CreateAction::make(),
             ImportAction::make()
-                ->importer(ProductImport::class),
+                ->importer(ProductImporter::class),
             ExportAction::make()
-                ->exporter(ProductExport::class),
+                ->exporter(ProductExporter::class),
         ];
     }
 }

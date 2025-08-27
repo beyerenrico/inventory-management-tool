@@ -6,8 +6,9 @@ use App\Models\Order;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
+use Illuminate\Support\Number;
 
-class OrderExport extends Exporter
+class OrderExporter extends Exporter
 {
     protected static ?string $model = Order::class;
 
@@ -29,7 +30,7 @@ class OrderExport extends Exporter
                 ->label('Delivery Date'),
             ExportColumn::make('total_amount')
                 ->label('Total Amount (€)')
-                ->formatStateUsing(fn ($state): string => '€' . number_format($state, 2)),
+                ->formatStateUsing(fn ($state): string => '€' . Number::format($state, 2)),
             ExportColumn::make('notes')
                 ->label('Notes'),
             ExportColumn::make('created_at')
@@ -41,10 +42,10 @@ class OrderExport extends Exporter
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your order export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
+        $body = 'Your order export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
         }
 
         return $body;

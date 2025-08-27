@@ -2,13 +2,14 @@
 
 namespace App\Filament\Resources\Distributors\Pages;
 
-use App\Filament\Exports\DistributorExport;
-use App\Filament\Imports\DistributorImport;
+use App\Filament\Exports\DistributorExporter;
+use App\Filament\Imports\DistributorImporter;
 use App\Filament\Resources\Distributors\DistributorResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
+use Livewire\Attributes\On;
 
 class ListDistributors extends ListRecords
 {
@@ -19,9 +20,15 @@ class ListDistributors extends ListRecords
         return [
             CreateAction::make(),
             ImportAction::make()
-                ->importer(DistributorImport::class),
+                ->importer(DistributorImporter::class),
             ExportAction::make()
-                ->exporter(DistributorExport::class),
+                ->exporter(DistributorExporter::class),
         ];
+    }
+
+    #[On('refresh-distributors-table')]
+    public function refreshTable(): void
+    {
+        $this->resetTable();
     }
 }

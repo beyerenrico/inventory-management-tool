@@ -38,6 +38,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // Custom widgets will be auto-discovered
             ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
