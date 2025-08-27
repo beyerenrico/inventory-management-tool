@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
     protected $fillable = [
+        'distributor_id',
         'order_number',
-        'type',
         'status',
-        'customer_name',
-        'customer_email',
-        'customer_address',
         'total_amount',
         'order_date',
         'delivery_date',
@@ -25,6 +23,11 @@ class Order extends Model
         'order_date' => 'date',
         'delivery_date' => 'date',
     ];
+
+    public function distributor(): BelongsTo
+    {
+        return $this->belongsTo(Distributor::class);
+    }
 
     public function orderItems(): HasMany
     {

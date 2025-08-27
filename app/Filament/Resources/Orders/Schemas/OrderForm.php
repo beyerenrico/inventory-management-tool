@@ -2,9 +2,17 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Models\Distributor;
 use App\Models\Product;
-use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
 
 class OrderForm
 {
@@ -12,21 +20,14 @@ class OrderForm
     {
         return $schema
             ->components([
-                Forms\Components\Section::make('Order Information')
+                Section::make('Order Information')
                     ->schema([
-                        Forms\Components\TextInput::make('order_number')
+                        TextInput::make('order_number')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->default(fn () => 'ORD-' . now()->format('Ymd-His'))
                             ->maxLength(255),
-                        Forms\Components\Select::make('type')
-                            ->options([
-                                'b2c' => 'B2C (Business to Consumer)',
-                                'b2b' => 'B2B (Business to Business)',
-                            ])
-                            ->required()
-                            ->default('b2c'),
-                        Forms\Components\Select::make('status')
+                        Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
                                 'processing' => 'Processing',
@@ -36,35 +37,87 @@ class OrderForm
                             ])
                             ->required()
                             ->default('pending'),
-                        Forms\Components\DatePicker::make('order_date')
+                        DatePicker::make('order_date')
                             ->required()
                             ->default(now()),
-                        Forms\Components\DatePicker::make('delivery_date'),
+                        DatePicker::make('delivery_date'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Customer Information')
+                Section::make('Distributor Information')
                     ->schema([
-                        Forms\Components\TextInput::make('customer_name')
+                        Select::make('distributor_id')
+                            ->label('Select Distributor')
+                            ->options(Distributor::all()->pluck('full_name', 'id'))
+                            ->searchable()
                             ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('customer_email')
-                            ->email()
-                            ->maxLength(255),
-                        Forms\Components\Textarea::make('customer_address')
-                            ->rows(3)
-                            ->maxLength(65535),
-                    ])->columns(2),
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('email')
+                                    ->email()
+                                    ->maxLength(255),
+                                TextInput::make('website')
+                                    ->url()
+                                    ->placeholder('https://example.com')
+                                    ->maxLength(255),
+                                PhoneInput::make('phone')
+                                    ->defaultCountry('US')
+                                    ->displayNumberFormat(PhoneInputNumberType::NATIONAL)
+                                    ->focusNumberFormat(PhoneInputNumberType::E164),
+                                TextInput::make('company')
+                                    ->maxLength(255),
+                                Textarea::make('address')
+                                    ->rows(3)
+                                    ->maxLength(65535),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                return Distributor::create($data)->getKey();
+                            })
+                            ->helperText('Choose an existing distributor or create a new one'),
+                    ]),
 
-                Forms\Components\Section::make('Order Items')
+                Section::make('Order Items')
                     ->schema([
-                        Forms\Components\Repeater::make('orderItems')
+                        Repeater::make('orderItems')
                             ->relationship()
                             ->schema([
-                                Forms\Components\Select::make('product_id')
+                                Select::make('product_id')
                                     ->label('Product')
-                                    ->options(Product::where('is_active', true)->pluck('name', 'id'))
+                                    ->options(Product::pluck('name', 'id'))
                                     ->required()
                                     ->reactive()
+                                    ->searchable()
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->required()
+                                            ->maxLength(255),
+                                        TextInput::make('sku')
+                                            ->label('SKU')
+                                            ->required()
+                                            ->unique(Product::class, 'sku')
+                                            ->maxLength(255),
+                                        TextInput::make('ean')
+                                            ->label('EAN/GTIN')
+                                            ->maxLength(255),
+                                        Textarea::make('description')
+                                            ->rows(3)
+                                            ->maxLength(65535),
+                                        TextInput::make('price')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('€')
+                                            ->minValue(0)
+                                            ->step(0.01),
+                                        TextInput::make('stock_quantity')
+                                            ->required()
+                                            ->numeric()
+                                            ->minValue(0)
+                                            ->default(0),
+                                    ])
+                                    ->createOptionUsing(function (array $data): int {
+                                        return Product::create($data)->getKey();
+                                    })
                                     ->afterStateUpdated(function ($state, callable $set) {
                                         if ($state) {
                                             $product = Product::find($state);
@@ -73,7 +126,7 @@ class OrderForm
                                             }
                                         }
                                     }),
-                                Forms\Components\TextInput::make('quantity')
+                                TextInput::make('quantity')
                                     ->required()
                                     ->numeric()
                                     ->minValue(1)
@@ -84,7 +137,7 @@ class OrderForm
                                         $unitPrice = $get('unit_price') ?? 0;
                                         $set('total_price', $quantity * $unitPrice);
                                     }),
-                                Forms\Components\TextInput::make('unit_price')
+                                TextInput::make('unit_price')
                                     ->required()
                                     ->numeric()
                                     ->prefix('€')
@@ -96,7 +149,7 @@ class OrderForm
                                         $quantity = $get('quantity') ?? 0;
                                         $set('total_price', $quantity * $unitPrice);
                                     }),
-                                Forms\Components\TextInput::make('total_price')
+                                TextInput::make('total_price')
                                     ->required()
                                     ->numeric()
                                     ->prefix('€')
@@ -106,11 +159,12 @@ class OrderForm
                             ->columns(4)
                             ->addActionLabel('Add Product')
                             ->defaultItems(1),
-                    ]),
+                    ])
+                    ->columnSpan('full'),
 
-                Forms\Components\Section::make('Additional Information')
+                Section::make('Additional Information')
                     ->schema([
-                        Forms\Components\Textarea::make('notes')
+                        Textarea::make('notes')
                             ->rows(3)
                             ->maxLength(65535),
                     ]),

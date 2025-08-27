@@ -17,15 +17,10 @@ class OrdersTable
                 Tables\Columns\TextColumn::make('order_number')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('customer_name')
+                Tables\Columns\TextColumn::make('distributor.name')
+                    ->label('Distributor')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'b2c' => 'success',
-                        'b2b' => 'info',
-                    }),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
