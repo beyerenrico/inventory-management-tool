@@ -56,6 +56,10 @@ RUN composer run-script --no-dev post-autoload-dump
 # Install Node.js dependencies and build assets
 RUN npm install && npm run build
 
+# Publish Livewire and Filament assets
+RUN php artisan vendor:publish --tag=livewire:assets --force
+RUN php artisan filament:assets
+
 # Copy nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
