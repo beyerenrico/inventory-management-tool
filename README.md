@@ -138,6 +138,57 @@ lang/
 └── en/                  # English translations (default)
 ```
 
+## Deployment
+
+### Coolify on Hetzner VPS
+
+This application is designed to deploy easily on Coolify. Here's the configuration needed:
+
+#### Environment Variables
+```bash
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+QUEUE_CONNECTION=database
+```
+
+#### Deployment Configuration
+The application includes:
+- **HTTPS enforcement**: Automatically forces HTTPS in production environment
+- **Proxy trust**: Configured to work with reverse proxies (Coolify/Traefik)
+- **Mixed content protection**: Prevents HTTP/HTTPS mixed content issues
+- **Queue processing**: Database-based queue system for background jobs
+
+#### Post-Deployment Steps
+```bash
+# Run migrations
+php artisan migrate --force
+
+# Cache configuration for performance
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Start queue worker (use process manager like supervisor)
+php artisan queue:work --daemon
+```
+
+#### Queue Worker Setup
+For production, use a process manager like Supervisor to keep the queue worker running:
+
+```ini
+[program:inventory-queue-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/artisan queue:work --sleep=3 --tries=3
+directory=/path/to/project
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/log/inventory-queue.log
+```
+
 ## Security Features
 
 - **Multi-tenant data isolation**: Complete separation of store data
@@ -145,6 +196,8 @@ lang/
 - **Secure user management**: Users cannot elevate their own permissions
 - **Authorization checks**: Comprehensive authorization at model and resource levels
 - **Soft deletes**: Safe deletion with audit trail preservation
+- **HTTPS enforcement**: Automatic HTTPS redirection in production
+- **Proxy trust**: Secure proxy header handling for deployment behind load balancers
 
 ## License
 

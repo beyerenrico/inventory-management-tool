@@ -6,6 +6,7 @@ use App\Models\OrderItem;
 use App\Observers\OrderItemObserver;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Money\Money;
 
@@ -24,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         LanguageSwitch::configureUsing(static function (LanguageSwitch $switch) {
             $switch
                 ->locales(['en','de']);
