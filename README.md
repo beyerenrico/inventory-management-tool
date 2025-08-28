@@ -1,61 +1,151 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Inventory Management Tool
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive multi-store inventory management system built with Laravel 11 and Filament 4.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Multi-Store Support
+- **Store-based multi-tenancy**: Create and manage multiple stores with complete data isolation
+- **Role-based access control**: Owner, Admin, and Member roles with granular permissions
+- **User management**: Invite users to stores and manage their roles and permissions
+- **Secure authorization**: Users can only access stores they belong to
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Inventory Management
+- **Product catalog**: Comprehensive product management with SKU, EAN, pricing, and stock tracking
+- **Distributor management**: Track suppliers with full contact information and order history
+- **Order management**: Complete order lifecycle from creation to delivery
+- **Stock monitoring**: Real-time stock levels with low-stock alerts
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Analytics & Reporting
+- **Dashboard widgets**: Inventory overview, low stock alerts, recent orders, and monthly spending
+- **Price analysis**: Track price history, variance, and trends across distributors
+- **Order history**: Complete audit trail of all product orders and transactions
+- **Export functionality**: Export data in CSV and Excel formats
 
-## Learning Laravel
+### Localization
+- **German language support**: Fully localized interface with German translations
+- **Multi-language ready**: Translation system ready for additional languages
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Advanced Features
+- **Soft deletes**: Safe deletion with recovery options for all major entities
+- **Import/Export**: Bulk data operations with progress tracking and error reporting
+- **Responsive design**: Mobile-friendly interface built with Filament 4
+- **Queue processing**: Background job processing for imports and exports
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Technology Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Laravel 11**: Modern PHP framework with latest features
+- **Filament 4**: Advanced admin panel with modern UI components
+- **MariaDB**: Reliable database with full text search capabilities
+- **DDEV**: Development environment for consistent local development
+- **Queue System**: Background job processing for heavy operations
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Prerequisites
+- PHP 8.2+
+- DDEV installed
+- Composer
 
-### Premium Partners
+### Setup
+```bash
+# Clone the repository
+git clone <repository-url>
+cd inventory-management-tool
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Start DDEV environment
+ddev start
 
-## Contributing
+# Install dependencies
+ddev composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Set up environment
+ddev exec cp .env.example .env
+ddev exec php artisan key:generate
 
-## Code of Conduct
+# Run migrations and seeders
+ddev exec php artisan migrate
+ddev exec php artisan db:seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Start queue worker (required for imports/exports)
+ddev exec php artisan queue:work
+```
 
-## Security Vulnerabilities
+### Access the Application
+- Web interface: `https://inventory-management-tool.ddev.site`
+- Admin panel: `https://inventory-management-tool.ddev.site/admin`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Usage
+
+### Getting Started
+1. **Register a user account** or use seeded credentials
+2. **Create your first store** through the store registration process
+3. **Add distributors** to track your suppliers
+4. **Import or create products** to build your inventory catalog
+5. **Create orders** to track purchases and update stock levels
+
+### Multi-Store Management
+- **Store switching**: Use the tenant switcher to switch between stores
+- **User invitations**: Add team members with appropriate roles
+- **Permission management**: Control what users can see and edit
+- **Data isolation**: Each store's data is completely separate
+
+### Import/Export Operations
+- **Bulk imports**: Import products, distributors, and orders from CSV/Excel files
+- **Data validation**: Automatic validation with detailed error reporting
+- **Progress tracking**: Real-time progress updates during operations
+- **Export formats**: Download data in CSV or Excel formats
+
+## Development
+
+### DDEV Commands
+```bash
+# Database operations
+ddev exec php artisan migrate
+ddev exec php artisan migrate:fresh --seed
+
+# Queue operations
+ddev exec php artisan queue:work
+ddev exec php artisan queue:restart
+
+# Filament operations
+ddev exec php artisan make:filament-resource
+ddev exec php artisan make:filament-page
+
+# Cache operations
+ddev exec php artisan config:cache
+ddev exec php artisan route:cache
+```
+
+### Project Structure
+```
+app/
+├── Filament/
+│   ├── Resources/         # Resource definitions for each entity
+│   ├── Pages/            # Custom pages and tenant registration
+│   ├── Widgets/          # Dashboard widgets and analytics
+│   ├── Imports/          # Data import classes
+│   └── Exports/          # Data export classes
+├── Models/               # Eloquent models with relationships
+└── Observers/            # Model observers for business logic
+
+database/
+├── migrations/           # Database schema definitions
+└── seeders/             # Sample data for development
+
+lang/
+├── de/                  # German translations
+└── en/                  # English translations (default)
+```
+
+## Security Features
+
+- **Multi-tenant data isolation**: Complete separation of store data
+- **Role-based permissions**: Granular access control at resource and action levels
+- **Secure user management**: Users cannot elevate their own permissions
+- **Authorization checks**: Comprehensive authorization at model and resource levels
+- **Soft deletes**: Safe deletion with audit trail preservation
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
