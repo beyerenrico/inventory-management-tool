@@ -21,6 +21,25 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate --force
 fi
 
+# Display current APP_URL for debugging
+echo "APP_URL is set to: $APP_URL"
+
+# Set session secure flag for HTTPS
+if echo "$APP_URL" | grep -q "https://"; then
+    export SESSION_SECURE_COOKIE=true
+    echo "Setting SESSION_SECURE_COOKIE=true for HTTPS"
+else
+    export SESSION_SECURE_COOKIE=false
+    echo "Setting SESSION_SECURE_COOKIE=false for HTTP"
+fi
+
+# Warn if APP_URL looks incorrect for production
+if [ "$APP_ENV" = "production" ] && echo "$APP_URL" | grep -q "localhost\|ddev"; then
+    echo "WARNING: APP_URL contains localhost or ddev in production environment!"
+    echo "This will cause Livewire file upload signature validation to fail."
+    echo "Please set APP_URL to your production domain in Coolify environment variables."
+fi
+
 # Run database migrations
 echo "Running database migrations..."
 php artisan migrate --force
