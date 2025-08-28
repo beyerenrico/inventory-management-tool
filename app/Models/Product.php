@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use SoftDeletes;
+    
     protected $fillable = [
+        'store_id',
         'name',
         'sku',
         'ean',
@@ -22,6 +27,28 @@ class Product extends Model
     protected $casts = [
         'price' => 'decimal:2',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('store', function (Builder $query) {
+            $tenant = Filament::getTenant();
+            if ($tenant && $tenant->id) {
+                $query->where('store_id', $tenant->id);
+            }
+        });
+
+        static::creating(function (Product $product) {
+            $tenant = Filament::getTenant();
+            if ($tenant && $tenant->id) {
+                $product->store_id = $tenant->id;
+            }
+        });
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
+    }
 
     public function orderItems(): HasMany
     {

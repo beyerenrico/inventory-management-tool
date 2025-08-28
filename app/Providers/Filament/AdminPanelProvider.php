@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\RegisterStore;
+use App\Models\Store;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -26,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->tenant(Store::class)
+            ->tenantRegistration(RegisterStore::class)
             ->brandName('Inventory Manager')
             ->colors([
                 'primary' => Color::Amber,

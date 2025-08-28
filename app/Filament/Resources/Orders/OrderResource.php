@@ -20,6 +20,8 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
+    protected static ?string $tenantOwnershipRelationshipName = 'store';
+
     public static function getModelLabel(): string
     {
         return trans_choice('messages.order.title', 1);

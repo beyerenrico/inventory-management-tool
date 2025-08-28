@@ -22,6 +22,8 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
+    protected static ?string $tenantOwnershipRelationshipName = 'store';
+
     public static function getModelLabel(): string
     {
         return trans_choice('messages.product.title', 1);

@@ -20,6 +20,8 @@ class DistributorResource extends Resource
 {
     protected static ?string $model = Distributor::class;
 
+    protected static ?string $tenantOwnershipRelationshipName = 'store';
+
     public static function getModelLabel(): string
     {
         return trans_choice('messages.distributor.title', 1);

@@ -9,6 +9,7 @@ return [
     'order.title' => 'Bestellung|Bestellungen',
     'product.title' => 'Produkt|Produkte',
     'distributor.title' => 'Händler|Händler',
+    'store.title' => 'Geschäft|Geschäfte',
 
     // Order fields and labels
     'order' => [
@@ -222,5 +223,58 @@ return [
             'order_date' => 'Bestelldatum',
             'status' => 'Status',
         ],
+    ],
+
+    // Store fields and labels
+    'store' => [
+        'name' => 'Geschäftsname',
+        'slug' => 'URL-Slug',
+        'description' => 'Beschreibung',
+        'email' => 'E-Mail',
+        'phone' => 'Telefon',
+        'address' => 'Adresse',
+        'is_active' => 'Aktiv',
+        'status' => 'Status',
+        'users' => 'Benutzer',
+        'users_count' => 'Benutzer',
+        'created_at' => 'Erstellt am',
+        'updated_at' => 'Aktualisiert am',
+        'deleted_at' => 'Gelöscht am',
+        
+        // Form sections
+        'information' => 'Geschäftsinformationen',
+        'contact_information' => 'Kontaktinformationen',
+        
+        // Helper texts
+        'slug_help' => 'Dies wird in Ihrer Geschäfts-URL verwendet',
+        'description_help' => 'Kurze Beschreibung Ihres Geschäfts',
+        'email_help' => 'E-Mail-Adresse des Geschäfts',
+        'phone_help' => 'Telefonnummer des Geschäfts',
+        'address_help' => 'Vollständige Adresse des Geschäfts',
+        
+        // Status options
+        'active' => 'Aktiv',
+        'inactive' => 'Inaktiv',
+        
+        // Navigation and pages
+        'navigation_label' => 'Geschäfte',
+        'create_title' => 'Neues Geschäft erstellen',
+        'edit_title' => 'Geschäft bearbeiten',
+        'view_title' => 'Geschäft anzeigen',
+        'list_title' => 'Alle Geschäfte',
+        
+        // Users relation
+        'users_section' => 'Geschäftsbenutzer',
+        'user_role' => 'Rolle',
+        'user_joined' => 'Beigetreten',
+        'user_name' => 'Benutzername',
+        'add_user' => 'Benutzer hinzufügen',
+        'select_user' => 'Benutzer auswählen',
+        'select_role' => 'Rolle auswählen',
+        
+        // Roles
+        'role_owner' => 'Eigentümer',
+        'role_admin' => 'Administrator',
+        'role_member' => 'Mitglied',
     ],
 ];

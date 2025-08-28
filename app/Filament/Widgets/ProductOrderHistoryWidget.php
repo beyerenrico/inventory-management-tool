@@ -20,21 +20,33 @@ class ProductOrderHistoryWidget extends TableWidget
 
     public function table(Table $table): Table
     {
+        $tenant = \Filament\Facades\Filament::getTenant();
+        
         return $table
             ->query(
                 OrderItem::query()
-                    ->with(['order.distributor'])
+                    ->with(['order' => function ($query) use ($tenant) {
+                        if ($tenant) {
+                            $query->where('store_id', $tenant->id);
+                        }
+                    }, 'order.distributor'])
                     ->when($this->productId, fn ($query) => $query->where('product_id', $this->productId))
+                    ->whereHas('order', function ($query) use ($tenant) {
+                        if ($tenant) {
+                            $query->where('store_id', $tenant->id);
+                        }
+                    })
                     ->latest('created_at')
             )
             ->columns([
                 TextColumn::make('order.order_number')
                     ->label(__('messages.widgets.order_history.order_number'))
                     ->searchable()
-                    ->url(fn ($record) => "/admin/orders/{$record->order->id}/edit"),
+                    ->url(fn ($record) => $record->order ? "/admin/orders/{$record->order->id}/edit" : null),
                 TextColumn::make('order.distributor.name')
                     ->label(__('messages.distributor.name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->default('N/A'),
                 TextColumn::make('quantity')
                     ->label(__('messages.widgets.order_history.quantity'))
                     ->numeric(),
@@ -51,13 +63,14 @@ class ProductOrderHistoryWidget extends TableWidget
                 TextColumn::make('order.status')
                     ->label(__('messages.widgets.order_history.status'))
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => __("messages.order.status_{$state}"))
-                    ->color(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn (?string $state): string => $state ? __("messages.order.status_{$state}") : 'N/A')
+                    ->color(fn (?string $state): string => match ($state) {
                         'pending' => 'gray',
                         'processing' => 'warning',
                         'shipped' => 'info',
                         'delivered' => 'success',
                         'cancelled' => 'danger',
+                        default => 'secondary',
                     }),
             ])
             ->emptyStateHeading(__('messages.widgets.order_history.empty_title'))
