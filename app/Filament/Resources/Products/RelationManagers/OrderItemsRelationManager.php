@@ -22,7 +22,7 @@ class OrderItemsRelationManager extends RelationManager
                     ->searchable()
                     ->url(fn ($record) => "/admin/orders/{$record->order->id}/edit"),
                 Tables\Columns\TextColumn::make('order.distributor.name')
-                    ->label('Distributor')
+                    ->label(__('messages.distributor.title'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Quantity')

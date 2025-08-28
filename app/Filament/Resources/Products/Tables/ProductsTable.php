@@ -22,34 +22,35 @@ class ProductsTable
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Image')
+                    ->label(__('messages.product.image'))
                     ->circular()
                     ->defaultImageUrl('/images/placeholder-product.png')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('messages.product.name'))
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sku')
-                    ->label('SKU')
+                    ->label(__('messages.product.sku'))
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ean')
-                    ->label('EAN/GTIN')
+                    ->label(__('messages.product.ean'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('price')
-                    ->label('Current Price')
+                    ->label(__('messages.product.current_price'))
                     ->money('EUR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('average_price')
-                    ->label('Avg Price')
+                    ->label(__('messages.product.avg_price'))
                     ->money('EUR')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->getStateUsing(function ($record) {
                         return $record->average_price;
                     }),
                 Tables\Columns\TextColumn::make('stock_quantity')
-                    ->label('Stock')
+                    ->label(__('messages.product.stock'))
                     ->numeric()
                     ->sortable()
                     ->badge()
@@ -59,10 +60,12 @@ class ProductsTable
                         default => 'success',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('messages.product.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('messages.product.deleted_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

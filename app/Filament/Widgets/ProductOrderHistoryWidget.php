@@ -9,7 +9,10 @@ use Filament\Widgets\TableWidget;
 
 class ProductOrderHistoryWidget extends TableWidget
 {
-    protected static ?string $heading = 'Order History';
+    public function getTableHeading(): ?string
+    {
+        return __('messages.widgets.order_history.title');
+    }
 
     protected int | string | array $columnSpan = 'full';
 
@@ -26,28 +29,29 @@ class ProductOrderHistoryWidget extends TableWidget
             )
             ->columns([
                 TextColumn::make('order.order_number')
-                    ->label('Order Number')
+                    ->label(__('messages.widgets.order_history.order_number'))
                     ->searchable()
                     ->url(fn ($record) => "/admin/orders/{$record->order->id}/edit"),
                 TextColumn::make('order.distributor.name')
-                    ->label('Distributor')
+                    ->label(__('messages.distributor.name'))
                     ->searchable(),
                 TextColumn::make('quantity')
-                    ->label('Quantity')
+                    ->label(__('messages.widgets.order_history.quantity'))
                     ->numeric(),
                 TextColumn::make('unit_price')
-                    ->label('Unit Price')
+                    ->label(__('messages.widgets.order_history.unit_price'))
                     ->money('EUR'),
                 TextColumn::make('total_price')
-                    ->label('Total Price')
+                    ->label(__('messages.widgets.order_history.total_price'))
                     ->money('EUR'),
                 TextColumn::make('order.order_date')
-                    ->label('Order Date')
+                    ->label(__('messages.widgets.order_history.order_date'))
                     ->date()
                     ->sortable(),
                 TextColumn::make('order.status')
-                    ->label('Status')
+                    ->label(__('messages.widgets.order_history.status'))
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => __("messages.order.status_{$state}"))
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'gray',
                         'processing' => 'warning',
@@ -56,8 +60,8 @@ class ProductOrderHistoryWidget extends TableWidget
                         'cancelled' => 'danger',
                     }),
             ])
-            ->emptyStateHeading('No Orders Found')
-            ->emptyStateDescription('This product has not been ordered yet.')
+            ->emptyStateHeading(__('messages.widgets.order_history.empty_title'))
+            ->emptyStateDescription(__('messages.widgets.order_history.empty_description'))
             ->defaultSort('order.order_date', 'desc');
     }
 }

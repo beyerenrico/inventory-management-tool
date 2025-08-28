@@ -22,6 +22,16 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans_choice('messages.product.title', 1);
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans_choice('messages.product.title', 2);
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
 
     public static function form(Schema $schema): Schema

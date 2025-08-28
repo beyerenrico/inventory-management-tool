@@ -8,7 +8,12 @@ use Filament\Widgets\ChartWidget;
 
 class MonthlySpendingChart extends ChartWidget
 {
-    protected ?string $heading = 'Monthly Spending';
+    protected ?string $heading = null;
+    
+    public function getHeading(): string
+    {
+        return __('messages.widgets.monthly_spending.title');
+    }
     
     protected int | string | array $columnSpan = 'full';
 
@@ -33,7 +38,7 @@ class MonthlySpendingChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Monthly Spending (€)',
+                    'label' => __('messages.widgets.monthly_spending.chart_label'),
                     'data' => $data->pluck('total')->toArray(),
                     'borderColor' => '#10b981',
                     'backgroundColor' => 'rgba(16, 185, 129, 0.1)',

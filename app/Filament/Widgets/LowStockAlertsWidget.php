@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class LowStockAlertsWidget extends TableWidget
 {
-    protected static ?string $heading = 'Low Stock Alerts';
+    public function getTableHeading(): ?string
+    {
+        return __('messages.widgets.low_stock_alerts.title');
+    }
     
     protected int | string | array $columnSpan = 'full';
 
@@ -27,13 +30,14 @@ class LowStockAlertsWidget extends TableWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('messages.product.name'))
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sku')
-                    ->label('SKU')
+                    ->label(__('messages.product.sku'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('stock_quantity')
-                    ->label('Stock')
+                    ->label(__('messages.product.stock'))
                     ->badge()
                     ->color(fn (int $state): string => match (true) {
                         $state === 0 => 'danger',
@@ -41,17 +45,18 @@ class LowStockAlertsWidget extends TableWidget
                         default => 'success',
                     }),
                 Tables\Columns\TextColumn::make('price')
+                    ->label(__('messages.product.price'))
                     ->money('EUR'),
             ])
             ->actions([
                 Action::make('reorder')
-                    ->label('Reorder')
+                    ->label(__('messages.actions.reorder'))
                     ->icon('heroicon-m-shopping-cart')
                     ->url(fn (Product $record): string => '/admin/orders/create')
                     ->color('primary'),
             ])
-            ->emptyStateHeading('No Low Stock Items')
-            ->emptyStateDescription('All products have adequate stock levels.')
+            ->emptyStateHeading(__('messages.widgets.low_stock_alerts.empty_title'))
+            ->emptyStateDescription(__('messages.widgets.low_stock_alerts.empty_description'))
             ->emptyStateIcon('heroicon-o-check-circle')
             ->defaultPaginationPageOption(5);
     }

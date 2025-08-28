@@ -17,23 +17,23 @@ class InventoryOverviewWidget extends StatsOverviewWidget
         $outOfStockCount = Product::where('stock_quantity', 0)->count();
 
         return [
-            Stat::make('Total Products', $totalProducts)
-                ->description('All products in catalog')
+            Stat::make(__('messages.widgets.inventory_overview.total_products'), $totalProducts)
+                ->description(__('messages.widgets.inventory_overview.total_products_desc'))
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('primary'),
             
-            Stat::make('Inventory Value', '€' . number_format($totalInventoryValue, 2))
-                ->description('Total stock value')
+            Stat::make(__('messages.widgets.inventory_overview.inventory_value'), '€' . number_format($totalInventoryValue, 2))
+                ->description(__('messages.widgets.inventory_overview.inventory_value_desc'))
                 ->descriptionIcon('heroicon-m-currency-euro')
                 ->color('success'),
             
-            Stat::make('Low Stock Items', $lowStockCount)
-                ->description('Less than 10 units')
+            Stat::make(__('messages.widgets.inventory_overview.low_stock_items'), $lowStockCount)
+                ->description(__('messages.widgets.inventory_overview.low_stock_items_desc'))
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color($lowStockCount > 0 ? 'warning' : 'success'),
             
-            Stat::make('Out of Stock', $outOfStockCount)
-                ->description('Items needing reorder')
+            Stat::make(__('messages.widgets.inventory_overview.out_of_stock'), $outOfStockCount)
+                ->description(__('messages.widgets.inventory_overview.out_of_stock_desc'))
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color($outOfStockCount > 0 ? 'danger' : 'success'),
         ];

@@ -20,70 +20,80 @@ class OrderForm
     {
         return $schema
             ->components([
-                Section::make('Order Information')
+                Section::make(__('messages.order.information'))
                     ->schema([
                         TextInput::make('order_number')
+                            ->label(__('messages.order.order_number'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->default(fn () => 'ORD-' . now()->format('Ymd-His'))
                             ->maxLength(255),
                         Select::make('status')
+                            ->label(__('messages.order.status'))
                             ->options([
-                                'pending' => 'Pending',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled',
+                                'pending' => __('messages.order.status_pending'),
+                                'processing' => __('messages.order.status_processing'),
+                                'shipped' => __('messages.order.status_shipped'),
+                                'delivered' => __('messages.order.status_delivered'),
+                                'cancelled' => __('messages.order.status_cancelled'),
                             ])
                             ->required()
                             ->default('pending'),
                         DatePicker::make('order_date')
+                            ->label(__('messages.order.order_date'))
                             ->required()
                             ->default(now()),
-                        DatePicker::make('delivery_date'),
+                        DatePicker::make('delivery_date')
+                            ->label(__('messages.order.delivery_date')),
                     ])->columns(2),
 
-                Section::make('Distributor Information')
+                Section::make(__('messages.order.distributor_information'))
                     ->schema([
                         Select::make('distributor_id')
-                            ->label('Select Distributor')
+                            ->label(__('messages.order.select_distributor'))
                             ->options(Distributor::all()->pluck('full_name', 'id'))
                             ->searchable()
                             ->required()
                             ->createOptionForm([
                                 TextInput::make('name')
+                                    ->label(__('messages.fields.name'))
                                     ->required()
                                     ->maxLength(255),
                                 TextInput::make('email')
+                                    ->label(__('messages.fields.email'))
                                     ->email()
                                     ->maxLength(255),
                                 TextInput::make('website')
+                                    ->label(__('messages.fields.website'))
                                     ->url()
                                     ->placeholder('https://example.com')
                                     ->maxLength(255),
                                 PhoneInput::make('phone')
+                                    ->label(__('messages.fields.phone'))
                                     ->defaultCountry('US')
                                     ->displayNumberFormat(PhoneInputNumberType::NATIONAL)
                                     ->focusNumberFormat(PhoneInputNumberType::E164),
                                 TextInput::make('company')
+                                    ->label(__('messages.fields.company'))
                                     ->maxLength(255),
                                 Textarea::make('address')
+                                    ->label(__('messages.fields.address'))
                                     ->rows(3)
                                     ->maxLength(65535),
                             ])
                             ->createOptionUsing(function (array $data): int {
                                 return Distributor::create($data)->getKey();
                             })
-                            ->helperText('Choose an existing distributor or create a new one'),
+                            ->helperText(__('messages.order.select_distributor_help')),
                     ]),
 
-                Section::make('Order Items')
+                Section::make(__('messages.order.order_items'))
                     ->schema([
                         Repeater::make('orderItems')
                             ->relationship()
                             ->schema([
                                 Select::make('product_id')
-                                    ->label('Product')
+                                    ->label(__('messages.order.product'))
                                     ->options(Product::pluck('name', 'id'))
                                     ->required()
                                     ->reactive()
@@ -127,6 +137,7 @@ class OrderForm
                                         }
                                     }),
                                 TextInput::make('quantity')
+                                    ->label(__('messages.order.quantity'))
                                     ->required()
                                     ->numeric()
                                     ->minValue(1)
@@ -138,6 +149,7 @@ class OrderForm
                                         $set('total_price', $quantity * $unitPrice);
                                     }),
                                 TextInput::make('unit_price')
+                                    ->label(__('messages.order.unit_price'))
                                     ->required()
                                     ->numeric()
                                     ->prefix('€')
@@ -150,6 +162,7 @@ class OrderForm
                                         $set('total_price', $quantity * $unitPrice);
                                     }),
                                 TextInput::make('total_price')
+                                    ->label(__('messages.order.total_price'))
                                     ->required()
                                     ->numeric()
                                     ->prefix('€')
@@ -157,14 +170,15 @@ class OrderForm
                                     ->dehydrated(),
                             ])
                             ->columns(4)
-                            ->addActionLabel('Add Product')
+                            ->addActionLabel(__('messages.order.add_product'))
                             ->defaultItems(1),
                     ])
                     ->columnSpan('full'),
 
-                Section::make('Additional Information')
+                Section::make(__('messages.order.additional_information'))
                     ->schema([
                         Textarea::make('notes')
+                            ->label(__('messages.order.notes'))
                             ->rows(3)
                             ->maxLength(65535),
                     ]),

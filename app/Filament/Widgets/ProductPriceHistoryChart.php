@@ -7,7 +7,12 @@ use Filament\Widgets\ChartWidget;
 
 class ProductPriceHistoryChart extends ChartWidget
 {
-    protected ?string $heading = 'Price Development';
+    protected ?string $heading = null;
+    
+    public function getHeading(): string
+    {
+        return __('messages.widgets.price_history.title');
+    }
 
     protected int | string | array $columnSpan = 'full';
 
@@ -15,7 +20,7 @@ class ProductPriceHistoryChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        return 'Historical price changes across different orders and distributors';
+        return __('messages.widgets.price_history.description');
     }
 
     protected function getData(): array
@@ -41,7 +46,7 @@ class ProductPriceHistoryChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Unit Price (€)',
+                    'label' => __('messages.widgets.price_history.chart_label'),
                     'data' => $prices,
                     'borderColor' => '#10b981',
                     'backgroundColor' => 'rgba(16, 185, 129, 0.1)',

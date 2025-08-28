@@ -20,7 +20,7 @@ class OrderExporter extends Exporter
             ExportColumn::make('order_number')
                 ->label('Order Number'),
             ExportColumn::make('distributor.name')
-                ->label('Distributor'),
+                ->label(__('messages.distributor.title')),
             ExportColumn::make('status')
                 ->label('Status')
                 ->formatStateUsing(fn ($state): string => ucfirst($state)),

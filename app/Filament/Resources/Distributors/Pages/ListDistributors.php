@@ -20,8 +20,10 @@ class ListDistributors extends ListRecords
         return [
             CreateAction::make(),
             ImportAction::make()
+                ->label(__('messages.actions.import'))
                 ->importer(DistributorImporter::class),
             ExportAction::make()
+                ->label(__('messages.actions.export'))
                 ->exporter(DistributorExporter::class),
         ];
     }

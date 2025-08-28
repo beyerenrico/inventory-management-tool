@@ -19,8 +19,10 @@ class ListProducts extends ListRecords
         return [
             CreateAction::make(),
             ImportAction::make()
+                ->label(__('messages.actions.import'))
                 ->importer(ProductImporter::class),
             ExportAction::make()
+                ->label(__('messages.actions.export'))
                 ->exporter(ProductExporter::class),
         ];
     }

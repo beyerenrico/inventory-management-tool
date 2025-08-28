@@ -19,8 +19,10 @@ class ListOrders extends ListRecords
         return [
             CreateAction::make(),
             ImportAction::make()
+                ->label(__('messages.actions.import'))
                 ->importer(OrderImporter::class),
             ExportAction::make()
+                ->label(__('messages.actions.export'))
                 ->exporter(OrderExporter::class),
         ];
     }

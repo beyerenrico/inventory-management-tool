@@ -15,32 +15,40 @@ class DistributorForm
     {
         return $schema
             ->components([
-                Section::make('Distributor Information')
+                Section::make(__('messages.distributor.distributor_information'))
                     ->schema([
                         TextInput::make('name')
+                            ->label(__('messages.distributor.name'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
+                            ->label(__('messages.distributor.email'))
                             ->email()
+                            ->placeholder(__('messages.distributor.email_placeholder'))
                             ->maxLength(255),
                         TextInput::make('website')
+                            ->label(__('messages.distributor.website'))
                             ->url()
-                            ->placeholder('https://example.com')
+                            ->placeholder(__('messages.distributor.website_placeholder'))
                             ->maxLength(255),
                         PhoneInput::make('phone')
+                            ->label(__('messages.distributor.phone'))
                             ->defaultCountry('US')
                             ->displayNumberFormat(PhoneInputNumberType::NATIONAL)
                             ->focusNumberFormat(PhoneInputNumberType::E164),
                         TextInput::make('company')
+                            ->label(__('messages.distributor.company'))
                             ->maxLength(255),
                     ])->columns(2),
 
-                Section::make('Address & Notes')
+                Section::make(__('messages.distributor.address_notes'))
                     ->schema([
                         Textarea::make('address')
+                            ->label(__('messages.distributor.address'))
                             ->rows(3)
                             ->maxLength(65535),
                         Textarea::make('notes')
+                            ->label(__('messages.distributor.notes'))
                             ->rows(3)
                             ->maxLength(65535),
                     ]),

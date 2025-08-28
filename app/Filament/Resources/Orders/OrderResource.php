@@ -20,6 +20,16 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans_choice('messages.order.title', 1);
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans_choice('messages.order.title', 2);
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingCart;
 
     public static function form(Schema $schema): Schema

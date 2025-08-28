@@ -20,6 +20,16 @@ class DistributorResource extends Resource
 {
     protected static ?string $model = Distributor::class;
 
+    public static function getModelLabel(): string
+    {
+        return trans_choice('messages.distributor.title', 1);
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return trans_choice('messages.distributor.title', 2);
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
     public static function form(Schema $schema): Schema
