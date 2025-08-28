@@ -67,7 +67,8 @@ return [
         'disk' => 'local',        // Use local disk for temporary uploads
         'rules' => ['required', 'file', 'max:51200'], // 50MB max file size
         'directory' => 'livewire-tmp',   // Temporary directory
-        'middleware' => ['web', \App\Http\Middleware\HandleLivewireUploads::class],  // Custom middleware for uploads
+        'middleware' => null,  // Remove all middleware to test
+        'global_validation' => false, // Disable global validation
         'preview_mimes' => [   // Supported file types for temporary pre-signed file URLs...
             'png', 'gif', 'bmp', 'svg', 'wav', 'mp4',
             'mov', 'avi', 'wmv', 'mp3', 'm4a',
