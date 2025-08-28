@@ -277,4 +277,23 @@ return [
         'role_admin' => 'Administrator',
         'role_member' => 'Mitglied',
     ],
+
+    // Import/Export notifications
+    'import' => [
+        'product_completed' => 'Produktimport abgeschlossen: :count :rows importiert.',
+        'product_failed' => ' :count :rows fehlgeschlagen.',
+        'distributor_completed' => 'Händlerimport abgeschlossen: :count :rows importiert.',
+        'distributor_failed' => ' :count :rows fehlgeschlagen.',
+        'order_completed' => 'Bestellungsimport abgeschlossen: :count :rows importiert.',
+        'order_failed' => ' :count :rows fehlgeschlagen.',
+    ],
+
+    'export' => [
+        'product_completed' => 'Produktexport abgeschlossen: :count :rows exportiert.',
+        'product_failed' => ' :count :rows fehlgeschlagen.',
+        'distributor_completed' => 'Händlerexport abgeschlossen: :count :rows exportiert.',
+        'distributor_failed' => ' :count :rows fehlgeschlagen.',
+        'order_completed' => 'Bestellungsexport abgeschlossen: :count :rows exportiert.',
+        'order_failed' => ' :count :rows fehlgeschlagen.',
+    ],
 ];

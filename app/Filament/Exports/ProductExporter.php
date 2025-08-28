@@ -18,31 +18,33 @@ class ProductExporter extends Exporter
             ExportColumn::make('id')
                 ->label('ID'),
             ExportColumn::make('name')
-                ->label('Name'),
+                ->label(__('messages.product.name')),
             ExportColumn::make('sku')
-                ->label('SKU'),
+                ->label(__('messages.product.sku')),
             ExportColumn::make('ean')
-                ->label('EAN/GTIN'),
+                ->label(__('messages.product.ean')),
             ExportColumn::make('description')
-                ->label('Description'),
+                ->label(__('messages.product.description')),
             ExportColumn::make('price')
-                ->label('Price (€)')
+                ->label(__('messages.product.price'))
                 ->formatStateUsing(fn ($state): string => '€' . Number::format($state, 2)),
             ExportColumn::make('stock_quantity')
-                ->label('Stock Quantity'),
+                ->label(__('messages.product.stock_quantity')),
             ExportColumn::make('created_at')
-                ->label('Created At'),
+                ->label(__('messages.product.created_at')),
             ExportColumn::make('updated_at')
-                ->label('Updated At'),
+                ->label(__('messages.product.updated_at')),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your product export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
+        $rows = $export->successful_rows === 1 ? 'Zeile' : 'Zeilen';
+        $body = 'Produktexport abgeschlossen: ' . Number::format($export->successful_rows) . ' ' . $rows . ' exportiert.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
+            $failedRows = $failedRowsCount === 1 ? 'Zeile' : 'Zeilen';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . $failedRows . ' fehlgeschlagen.';
         }
 
         return $body;

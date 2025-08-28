@@ -18,34 +18,36 @@ class OrderExporter extends Exporter
             ExportColumn::make('id')
                 ->label('ID'),
             ExportColumn::make('order_number')
-                ->label('Order Number'),
+                ->label(__('messages.order.order_number')),
             ExportColumn::make('distributor.name')
-                ->label(__('messages.distributor.title')),
+                ->label(__('messages.distributor.name')),
             ExportColumn::make('status')
-                ->label('Status')
-                ->formatStateUsing(fn ($state): string => ucfirst($state)),
+                ->label(__('messages.order.status'))
+                ->formatStateUsing(fn ($state): string => __('messages.order.status_' . $state)),
             ExportColumn::make('order_date')
-                ->label('Order Date'),
+                ->label(__('messages.order.order_date')),
             ExportColumn::make('delivery_date')
-                ->label('Delivery Date'),
+                ->label(__('messages.order.delivery_date')),
             ExportColumn::make('total_amount')
-                ->label('Total Amount (€)')
+                ->label(__('messages.order.total_amount'))
                 ->formatStateUsing(fn ($state): string => '€' . Number::format($state, 2)),
             ExportColumn::make('notes')
-                ->label('Notes'),
+                ->label(__('messages.order.notes')),
             ExportColumn::make('created_at')
-                ->label('Created At'),
+                ->label(__('messages.order.created_at')),
             ExportColumn::make('updated_at')
-                ->label('Updated At'),
+                ->label(__('messages.order.updated_at')),
         ];
     }
 
     public static function getCompletedNotificationBody(Export $export): string
     {
-        $body = 'Your order export has completed and ' . Number::format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
+        $rows = $export->successful_rows === 1 ? 'Zeile' : 'Zeilen';
+        $body = 'Bestellungsexport abgeschlossen: ' . Number::format($export->successful_rows) . ' ' . $rows . ' exportiert.';
 
         if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
+            $failedRows = $failedRowsCount === 1 ? 'Zeile' : 'Zeilen';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . $failedRows . ' fehlgeschlagen.';
         }
 
         return $body;

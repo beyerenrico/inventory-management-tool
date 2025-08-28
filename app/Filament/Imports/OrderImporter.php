@@ -16,23 +16,30 @@ class OrderImporter extends Importer
     {
         return [
             ImportColumn::make('distributor')
+                ->label(__('messages.order.distributor'))
                 ->relationship(),
             ImportColumn::make('order_number')
+                ->label(__('messages.order.order_number'))
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
             ImportColumn::make('status')
+                ->label(__('messages.order.status'))
                 ->requiredMapping()
                 ->rules(['required']),
             ImportColumn::make('total_amount')
+                ->label(__('messages.order.total_amount'))
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
             ImportColumn::make('order_date')
+                ->label(__('messages.order.order_date'))
                 ->requiredMapping()
                 ->rules(['required', 'date']),
             ImportColumn::make('delivery_date')
+                ->label(__('messages.order.delivery_date'))
                 ->rules(['date']),
-            ImportColumn::make('notes'),
+            ImportColumn::make('notes')
+                ->label(__('messages.order.notes')),
         ];
     }
 
@@ -43,10 +50,12 @@ class OrderImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your order import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $rows = $import->successful_rows === 1 ? 'Zeile' : 'Zeilen';
+        $body = 'Bestellungsimport abgeschlossen: ' . Number::format($import->successful_rows) . ' ' . $rows . ' importiert.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $failedRows = $failedRowsCount === 1 ? 'Zeile' : 'Zeilen';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . $failedRows . ' fehlgeschlagen.';
         }
 
         return $body;

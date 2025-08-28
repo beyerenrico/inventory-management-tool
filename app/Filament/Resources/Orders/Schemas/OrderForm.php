@@ -98,6 +98,7 @@ class OrderForm
                                     ->required()
                                     ->reactive()
                                     ->searchable()
+                                    ->columnSpan(4)
                                     ->createOptionForm([
                                         TextInput::make('name')
                                             ->required()
@@ -143,6 +144,7 @@ class OrderForm
                                     ->minValue(1)
                                     ->default(1)
                                     ->reactive()
+                                    ->columnSpan(1)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $quantity = $state ?? 0;
                                         $unitPrice = $get('unit_price') ?? 0;
@@ -156,6 +158,7 @@ class OrderForm
                                     ->minValue(0)
                                     ->step(0.01)
                                     ->reactive()
+                                    ->columnSpan(1)
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $unitPrice = $state ?? 0;
                                         $quantity = $get('quantity') ?? 0;
@@ -167,9 +170,10 @@ class OrderForm
                                     ->numeric()
                                     ->prefix('€')
                                     ->disabled()
-                                    ->dehydrated(),
+                                    ->dehydrated()
+                                    ->columnSpan(1),
                             ])
-                            ->columns(4)
+                            ->columns(7)
                             ->addActionLabel(__('messages.order.add_product'))
                             ->defaultItems(1),
                     ])

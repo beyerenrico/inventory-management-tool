@@ -16,22 +16,28 @@ class ProductImporter extends Importer
     {
         return [
             ImportColumn::make('name')
+                ->label(__('messages.product.name'))
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
             ImportColumn::make('sku')
-                ->label('SKU')
+                ->label(__('messages.product.sku'))
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
             ImportColumn::make('ean')
+                ->label(__('messages.product.ean'))
                 ->rules(['max:255']),
-            ImportColumn::make('description'),
+            ImportColumn::make('description')
+                ->label(__('messages.product.description')),
             ImportColumn::make('image')
+                ->label(__('messages.product.image'))
                 ->rules(['max:255']),
             ImportColumn::make('price')
+                ->label(__('messages.product.price'))
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
             ImportColumn::make('stock_quantity')
+                ->label(__('messages.product.stock_quantity'))
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
@@ -45,10 +51,12 @@ class ProductImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your product import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $rows = $import->successful_rows === 1 ? 'Zeile' : 'Zeilen';
+        $body = 'Produktimport abgeschlossen: ' . Number::format($import->successful_rows) . ' ' . $rows . ' importiert.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $failedRows = $failedRowsCount === 1 ? 'Zeile' : 'Zeilen';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . $failedRows . ' fehlgeschlagen.';
         }
 
         return $body;

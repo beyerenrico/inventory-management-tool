@@ -16,17 +16,24 @@ class DistributorImporter extends Importer
     {
         return [
             ImportColumn::make('name')
+                ->label(__('messages.distributor.name'))
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
             ImportColumn::make('email')
+                ->label(__('messages.distributor.email'))
                 ->rules(['email', 'max:255']),
             ImportColumn::make('website')
+                ->label(__('messages.distributor.website'))
                 ->rules(['max:255']),
-            ImportColumn::make('address'),
+            ImportColumn::make('address')
+                ->label(__('messages.distributor.address')),
             ImportColumn::make('company')
+                ->label(__('messages.distributor.company'))
                 ->rules(['max:255']),
-            ImportColumn::make('notes'),
+            ImportColumn::make('notes')
+                ->label(__('messages.distributor.notes')),
             ImportColumn::make('phone')
+                ->label(__('messages.distributor.phone'))
                 ->rules(['max:255']),
         ];
     }
@@ -38,10 +45,12 @@ class DistributorImporter extends Importer
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your distributor import has completed and ' . Number::format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $rows = $import->successful_rows === 1 ? 'Zeile' : 'Zeilen';
+        $body = 'Händlerimport abgeschlossen: ' . Number::format($import->successful_rows) . ' ' . $rows . ' importiert.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
-            $body .= ' ' . Number::format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
+            $failedRows = $failedRowsCount === 1 ? 'Zeile' : 'Zeilen';
+            $body .= ' ' . Number::format($failedRowsCount) . ' ' . $failedRows . ' fehlgeschlagen.';
         }
 
         return $body;

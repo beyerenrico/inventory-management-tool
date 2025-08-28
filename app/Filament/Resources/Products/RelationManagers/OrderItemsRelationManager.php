@@ -10,7 +10,7 @@ class OrderItemsRelationManager extends RelationManager
 {
     protected static string $relationship = 'orderItems';
 
-    protected static ?string $title = 'Order History';
+    protected static ?string $title = 'Bestellhistorie';
 
     public function table(Table $table): Table
     {
@@ -18,29 +18,30 @@ class OrderItemsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('order.order_number')
-                    ->label('Order Number')
+                    ->label(__('messages.order.order_number'))
                     ->searchable()
                     ->url(fn ($record) => "/admin/orders/{$record->order->id}/edit"),
                 Tables\Columns\TextColumn::make('order.distributor.name')
-                    ->label(__('messages.distributor.title'))
+                    ->label(__('messages.distributor.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
-                    ->label('Quantity')
+                    ->label(__('messages.order.quantity'))
                     ->numeric(),
                 Tables\Columns\TextColumn::make('unit_price')
-                    ->label('Unit Price')
+                    ->label(__('messages.order.unit_price'))
                     ->money('EUR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
-                    ->label('Total Price')
+                    ->label(__('messages.order.total_price'))
                     ->money('EUR'),
                 Tables\Columns\TextColumn::make('order.order_date')
-                    ->label('Order Date')
+                    ->label(__('messages.order.order_date'))
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order.status')
-                    ->label('Status')
+                    ->label(__('messages.order.status'))
                     ->badge()
+                    ->formatStateUsing(fn (?string $state): string => $state ? __("messages.order.status_{$state}") : 'N/A')
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'gray',
                         'processing' => 'warning',
@@ -61,8 +62,8 @@ class OrderItemsRelationManager extends RelationManager
             ->bulkActions([
                 //
             ])
-            ->emptyStateHeading('No Orders Found')
-            ->emptyStateDescription('This product has not been ordered yet.')
+            ->emptyStateHeading(__('messages.widgets.order_history.empty_title'))
+            ->emptyStateDescription(__('messages.widgets.order_history.empty_description'))
             ->defaultSort('order.order_date', 'desc');
     }
 }

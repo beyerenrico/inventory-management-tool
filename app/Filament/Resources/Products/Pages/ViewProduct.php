@@ -26,61 +26,62 @@ class ViewProduct extends ViewRecord
     {
         return $schema
             ->schema([
-                Section::make('Product Information')
+                Section::make(__('messages.product.product_information'))
                     ->schema([
                         ImageEntry::make('image')
-                            ->label('Product Image')
+                            ->label(__('messages.product.image'))
                             ->defaultImageUrl('/images/placeholder-product.png')
                             ->columnSpanFull(),
                         TextEntry::make('name')
-                            ->label('Product Name'),
+                            ->label(__('messages.product.name'))
+                            ->columnSpanFull(),
                         TextEntry::make('sku')
-                            ->label('SKU'),
+                            ->label(__('messages.product.sku')),
                         TextEntry::make('ean')
-                            ->label('EAN/GTIN'),
+                            ->label(__('messages.product.ean')),
                         TextEntry::make('description')
-                            ->label('Description')
+                            ->label(__('messages.product.description'))
                             ->html()
                             ->columnSpanFull(),
                         TextEntry::make('current_price')
-                            ->label('Current Price')
+                            ->label(__('messages.product.current_price'))
                             ->money('EUR')
                             ->getStateUsing(fn ($record) => $record->price),
                         TextEntry::make('average_price')
-                            ->label('Average Order Price')
+                            ->label(__('messages.product.average_price'))
                             ->money('EUR')
                             ->getStateUsing(function ($record) {
                                 $avgPrice = $record->orderItems()->avg('unit_price');
                                 return $avgPrice ? $avgPrice : $record->price;
                             }),
                         TextEntry::make('stock_quantity')
-                            ->label('Current Stock')
+                            ->label(__('messages.product.stock_quantity'))
                             ->badge()
                             ->color(fn ($state) => $state < 10 ? Color::Red : ($state < 50 ? Color::Yellow : Color::Green)),
                         TextEntry::make('total_ordered')
-                            ->label('Total Quantity Ordered')
+                            ->label('Gesamte bestellte Menge')
                             ->getStateUsing(fn ($record) => $record->orderItems()->sum('quantity')),
                     ])
                     ->columns(3),
 
-                Section::make('Price Analysis')
+                Section::make('Preisanalyse')
                     ->schema([
                         TextEntry::make('min_price')
-                            ->label('Lowest Order Price')
+                            ->label('Niedrigster Bestellpreis')
                             ->money('EUR')
                             ->getStateUsing(function ($record) {
                                 $minPrice = $record->orderItems()->min('unit_price');
                                 return $minPrice ?? $record->price;
                             }),
                         TextEntry::make('max_price')
-                            ->label('Highest Order Price')
+                            ->label('Höchster Bestellpreis')
                             ->money('EUR')
                             ->getStateUsing(function ($record) {
                                 $maxPrice = $record->orderItems()->max('unit_price');
                                 return $maxPrice ?? $record->price;
                             }),
                         TextEntry::make('price_variance')
-                            ->label('Price Variance')
+                            ->label('Preisvarianz')
                             ->money('EUR')
                             ->getStateUsing(function ($record) {
                                 $minPrice = $record->orderItems()->min('unit_price');
@@ -91,10 +92,10 @@ class ViewProduct extends ViewRecord
                                 return 0;
                             }),
                         TextEntry::make('total_orders')
-                            ->label('Total Orders')
+                            ->label('Gesamte Bestellungen')
                             ->getStateUsing(fn ($record) => $record->orderItems()->count()),
                         TextEntry::make('unique_distributors')
-                            ->label('Different Distributors')
+                            ->label('Verschiedene Händler')
                             ->getStateUsing(function ($record) {
                                 return $record->orderItems()
                                     ->join('orders', 'order_items.order_id', '=', 'orders.id')
@@ -102,13 +103,13 @@ class ViewProduct extends ViewRecord
                                     ->count('orders.distributor_id');
                             }),
                         TextEntry::make('last_order_date')
-                            ->label('Last Ordered')
+                            ->label('Zuletzt bestellt')
                             ->getStateUsing(function ($record) {
                                 $lastOrder = $record->orderItems()
                                     ->join('orders', 'order_items.order_id', '=', 'orders.id')
                                     ->orderBy('orders.order_date', 'desc')
                                     ->first(['orders.order_date']);
-                                return $lastOrder ? \Carbon\Carbon::parse($lastOrder->order_date)->format('M d, Y') : 'Never';
+                                return $lastOrder ? \Carbon\Carbon::parse($lastOrder->order_date)->format('d.m.Y') : 'Niemals';
                             }),
                     ])
                     ->columns(3),
