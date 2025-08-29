@@ -37,11 +37,6 @@ if [ ! -L "/var/www/html/public/storage" ]; then
     php artisan storage:link
 fi
 
-# Ensure Livewire and Filament assets are published
-echo "Publishing Livewire and Filament assets..."
-php artisan vendor:publish --tag=livewire:assets --force
-php artisan filament:assets
-
 echo "Application setup completed!"
 
 # Execute the main command
