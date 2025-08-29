@@ -27,18 +27,11 @@ echo "APP_URL is set to: $APP_URL"
 # Set session secure flag for HTTPS
 if echo "$APP_URL" | grep -q "https://"; then
     export SESSION_SECURE_COOKIE=true
-    export SESSION_SAME_SITE=lax
-    echo "Setting SESSION_SECURE_COOKIE=true and SESSION_SAME_SITE=lax for HTTPS"
+    echo "Setting SESSION_SECURE_COOKIE=true for HTTPS"
 else
     export SESSION_SECURE_COOKIE=false
-    export SESSION_SAME_SITE=lax
-    echo "Setting SESSION_SECURE_COOKIE=false and SESSION_SAME_SITE=lax for HTTP"
+    echo "Setting SESSION_SECURE_COOKIE=false for HTTP"
 fi
-
-# Extract domain for session cookie
-DOMAIN=$(echo "$APP_URL" | sed -e 's|^[^/]*//||' -e 's|/.*||')
-export SESSION_DOMAIN="$DOMAIN"
-echo "Setting SESSION_DOMAIN=$DOMAIN"
 
 # Warn if APP_URL looks incorrect for production
 if [ "$APP_ENV" = "production" ] && echo "$APP_URL" | grep -q "localhost\|ddev"; then
