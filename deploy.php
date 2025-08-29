@@ -9,9 +9,9 @@ require 'recipe/deploy/env.php';
 set('repository', 'https://github.com/beyerenrico/inventory-management-tool.git');
 set('env_file', __DIR__ . '/.env.production');
 
-add('shared_files', ['.env']);
-add('shared_dirs', ['storage']);
-add('writable_dirs', ['storage', 'bootstrap/cache']);
+add('shared_dirs', []);
+add('shared_files', []);
+add('writable_dirs', []);
 
 
 // Hosts
@@ -30,5 +30,5 @@ host(getenv('DEPLOY_HOST') ?: 'inv.beyerenrico.com')
 
 // Hooks
 
-before('deploy:vendors', 'deploy:env');
+before('deploy:shared', 'deploy:vendors', 'deploy:env');
 after('deploy:failed', 'deploy:unlock');
