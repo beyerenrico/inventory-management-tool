@@ -34,9 +34,32 @@ class Store extends Model implements HasName, HasAvatar
     {
         static::creating(function (Store $store) {
             if (empty($store->slug)) {
-                $store->slug = Str::slug($store->name);
+                $store->slug = static::generateUniqueSlug($store->name);
             }
         });
+
+        static::updating(function (Store $store) {
+            if ($store->isDirty('name') && empty($store->slug)) {
+                $store->slug = static::generateUniqueSlug($store->name, $store->id);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique slug for the store
+     */
+    protected static function generateUniqueSlug(string $name, ?int $excludeId = null): string
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->when($excludeId, fn($query) => $query->where('id', '!=', $excludeId))->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function getFilamentName(): string
@@ -47,6 +70,22 @@ class Store extends Model implements HasName, HasAvatar
     public function getFilamentAvatarUrl(): ?string
     {
         return null; // You can implement store avatars later
+    }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where($field ?? $this->getRouteKeyName(), $value)->first();
     }
 
     public function users(): BelongsToMany

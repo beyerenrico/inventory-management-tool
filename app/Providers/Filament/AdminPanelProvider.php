@@ -28,7 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->tenant(Store::class)
+            ->tenant(Store::class, slugAttribute: 'slug')
+            ->tenantRoutePrefix('store')
             ->tenantRegistration(RegisterStore::class)
             ->brandName('Inventory Manager')
             ->colors([
