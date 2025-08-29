@@ -37,12 +37,6 @@ if [ ! -L "/var/www/html/public/storage" ]; then
     php artisan storage:link
 fi
 
-# Create Livewire temporary upload directory
-echo "Creating Livewire temporary upload directory..."
-mkdir -p /var/www/html/storage/app/livewire-tmp
-chown -R www-data:www-data /var/www/html/storage/app/livewire-tmp
-chmod -R 755 /var/www/html/storage/app/livewire-tmp
-
 # Ensure Livewire and Filament assets are published
 echo "Publishing Livewire and Filament assets..."
 php artisan vendor:publish --tag=livewire:assets --force
