@@ -140,80 +140,54 @@ lang/
 
 ## Deployment
 
-### Docker Deployment
-
-The application includes a complete Docker setup for production deployment.
-
-#### Using Docker Compose (Local Testing)
-```bash
-# Generate application key first
-docker run --rm -v $(pwd):/app composer:2 php /app/artisan key:generate --show
-
-# Update APP_KEY in docker-compose.yml, then start
-docker-compose up -d
-```
-
-#### Using Docker (Production)
-```bash
-# Build the image
-docker build -t inventory-management-tool .
-
-# Run with environment variables
-docker run -d \
-  -p 80:80 \
-  -e APP_ENV=production \
-  -e APP_KEY=your-generated-key \
-  -e APP_URL=https://your-domain.com \
-  -e DB_CONNECTION=mysql \
-  -e DB_HOST=your-db-host \
-  -e DB_DATABASE=your-db-name \
-  -e DB_USERNAME=your-db-user \
-  -e DB_PASSWORD=your-db-password \
-  -e QUEUE_CONNECTION=database \
-  inventory-management-tool
-```
-
 ### Coolify on Hetzner VPS
 
-This application is designed to deploy easily on Coolify using the included Dockerfile:
+This application is designed to deploy easily on Coolify. Here's the configuration needed:
 
-#### Coolify Setup Steps
-1. **Create new project** in Coolify dashboard
-2. **Connect your Git repository**
-3. **Set environment variables**:
+#### Environment Variables
 ```bash
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://your-domain.com
-DB_CONNECTION=mysql
-DB_HOST=your-database-host
-DB_DATABASE=your-database-name
-DB_USERNAME=your-database-user
-DB_PASSWORD=your-database-password
 QUEUE_CONNECTION=database
 ```
 
-#### What's Included
-The Docker setup includes:
-- **Multi-service architecture**: Nginx + PHP-FPM + Queue Worker
-- **Automatic setup**: Database migrations and caching on startup
-- **HTTPS enforcement**: Forces HTTPS in production environment
+#### Deployment Configuration
+The application includes:
+- **HTTPS enforcement**: Automatically forces HTTPS in production environment
 - **Proxy trust**: Configured to work with reverse proxies (Coolify/Traefik)
-- **Queue processing**: Background job processing with Supervisor
-- **Optimized PHP**: OPcache enabled, production-ready settings
-- **Security headers**: XSS protection, content type sniffing prevention
-- **Asset optimization**: Gzip compression, long-term caching
+- **Mixed content protection**: Prevents HTTP/HTTPS mixed content issues
+- **Queue processing**: Database-based queue system for background jobs
 
-#### Health Checks
-The application exposes health check endpoints:
-- `/health` - Basic health check
-- `/up` - Laravel's built-in health check
+#### Post-Deployment Steps
+```bash
+# Run migrations
+php artisan migrate --force
 
-#### Scaling
-The Docker image includes:
-- **Supervisor** for process management
-- **PHP-FPM** with optimized worker processes
-- **Queue workers** that automatically restart on failure
+# Cache configuration for performance
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Start queue worker (use process manager like supervisor)
+php artisan queue:work --daemon
+```
+
+#### Queue Worker Setup
+For production, use a process manager like Supervisor to keep the queue worker running:
+
+```ini
+[program:inventory-queue-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/artisan queue:work --sleep=3 --tries=3
+directory=/path/to/project
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/log/inventory-queue.log
+```
 
 ## Security Features
 
