@@ -6,11 +6,25 @@ use App\Models\Distributor;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
+use Filament\Facades\Filament;
 use Illuminate\Support\Number;
 
 class DistributorImporter extends Importer
 {
     protected static ?string $model = Distributor::class;
+
+    protected ?int $tenantId = null;
+
+    public function __construct($import, $columnMap, $options)
+    {
+        parent::__construct($import, $columnMap, $options);
+
+        // Store the tenant ID when the importer is instantiated (during web request)
+        $tenant = Filament::getTenant();
+        if ($tenant) {
+            $this->tenantId = $tenant->id;
+        }
+    }
 
     public static function getColumns(): array
     {
@@ -40,7 +54,17 @@ class DistributorImporter extends Importer
 
     public function resolveRecord(): Distributor
     {
-        return new Distributor();
+        $distributor = new Distributor();
+
+        // Use stored tenant ID instead of Filament::getTenant()
+        if ($this->tenantId) {
+            $distributor->store_id = $this->tenantId;
+        } else {
+            // Throw error if tenant ID is not available
+            throw new \Exception('Tenant context not available for import');
+        }
+
+        return $distributor;
     }
 
     public static function getCompletedNotificationBody(Import $import): string
